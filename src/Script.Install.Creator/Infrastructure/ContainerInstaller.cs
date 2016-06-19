@@ -3,11 +3,13 @@ using System.IO;
 using Castle.Core.Internal;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using Common.Logging;
 using NCmdLiner;
 using Script.Install.Creator.Library.Infrastructure;
+using Script.Install.Creator.Library.Module.Commands.CreatePackage;
 using Script.Install.Creator.Library.Module.ViewModels;
 using Script.Install.Creator.Library.Module.Views;
 using SingletonAttribute = Script.Install.Creator.Library.Infrastructure.SingletonAttribute;
@@ -19,6 +21,7 @@ namespace Script.Install.Creator.Infrastructure
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(Component.For<IWindsorContainer>().Instance(container));
+            container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel));
             container.AddFacility<TypedFactoryFacility>();
             container.Register(Component.For<ITypedFactoryComponentSelector>().ImplementedBy<CustomTypeFactoryComponentSelector>());
             container.Register(Component.For<IMessenger>().ImplementedBy<NotepadMessenger>());
@@ -52,6 +55,9 @@ namespace Script.Install.Creator.Infrastructure
 
             container.Register(Component.For<IInvocationLogStringBuilder>().ImplementedBy<InvocationLogStringBuilder>().LifestyleSingleton());
             container.Register(Component.For<ILogFactory>().ImplementedBy<LogFactory>().LifestyleSingleton());
+            container.Register(Classes.FromAssemblyContaining<ITypeMapper>().IncludeNonPublicTypes().BasedOn<AutoMapper.Profile>().WithService.Base());
+            
+            container.Register(Classes.FromAssemblyContaining<IPackageCreator>().IncludeNonPublicTypes().BasedOn<IPackageCreator>().WithService.Base());
             ///////////////////////////////////////////////////////////////////
             //Automatic registrations
             ///////////////////////////////////////////////////////////////////
@@ -94,6 +100,8 @@ namespace Script.Install.Creator.Infrastructure
             
             IApplicationInfo applicationInfo = new ApplicationInfo();
             container.Register(Component.For<IApplicationInfo>().Instance(applicationInfo).LifestyleSingleton());
+
+            
         }
     }
 }

@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("Script.Install.Creator")]
 [assembly: AssemblyCopyright("Copyright © github.trondr 2016")]
 [assembly: CLSCompliant(false)]
-[assembly: AssemblyInformationalVersion("1.0.16089.0.87be476")]
+[assembly: AssemblyInformationalVersion("1.0.16089.0.6b332a0")]
 [assembly: AssemblyVersion("1.0.16089.0")]
 [assembly: AssemblyFileVersion("1.0.16089.0")]
 
